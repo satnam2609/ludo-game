@@ -1,0 +1,15 @@
+<div class="lobby">
+  <h1>🎲 Ludo Lobby</h1>
+
+  <div class="form">
+    <div class="input-container">
+      <input [(ngModel)]="playerName" type="text" placeholder="Enter your name" />
+      <input [(ngModel)]="roomId" placeholder="Enter room ID (optional)" />
+    </div>
+
+    <div class="buttons">
+      <button (click)="createRoom()">Create Room</button>
+      <button (click)="joinRoom()">Join Room</button>
+    </div>
+  </div>
+</div>
