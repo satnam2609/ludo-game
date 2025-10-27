@@ -3,46 +3,79 @@
   dice: diceValue$ | async,
   turn: turn$ | async,
   state: state$ | async,
-  eligible: eligiblePieces$ | async
+  eligible: eligiblePieces$ | async,
+  players: players$ | async,
+  currentPlayer: currentPlayer$ | async,
+  hasWon: hasWon$ | async
 } as data">
+  
+  <!-- Room Info Header -->
+  <div class="room-info">
+    <h3>Room: {{ roomId }}</h3>
+    <button class="btn btn-back" (click)="backToLobby()">Leave Room</button>
+  </div>
+
+  <!-- Players List -->
+  <div class="players-list">
+    <div *ngFor="let player of data.players" class="player-info">
+      <div class="player-indicator" [style.background-color]="getPlayerColor(player)"></div>
+      <span>{{ player }}</span>
+      <span *ngIf="player === data.currentPlayer">(You)</span>
+      <span *ngIf="getActivePlayer(data.turn!) === player">🎲</span>
+    </div>
+  </div>
+
+  <!-- Waiting for players -->
+  <div class="waiting" *ngIf="data.players && data.players.length < 2">
+    <p>Waiting for more players to join... ({{ data.players.length }}/4)</p>
+    <p>Share room code: <strong>{{ roomId }}</strong></p>
+  </div>
+
+  <!-- Game Board -->
   <div class="ludo">
     <div class="player-pieces">
       <ng-container *ngFor="let player of players">
-        <div
-          *ngFor="let piece of pieces"
-          class="player-piece"
-          [attr.player-id]="player"
+        <div *ngFor="let piece of pieces" 
+          class="player-piece" 
+          [attr.player-id]="player" 
           [attr.piece]="piece"
           [ngStyle]="getPiecePosition(getPlayerPosition(data.positions, player, piece))"
           [class.highlight]="isEligible(player, piece, data.turn!, data.eligible!)"
-          (click)="onPieceClick(player, piece)"
-        ></div>
+          (click)="onPieceClick(player, piece)">
+        </div>
       </ng-container>
     </div>
 
     <div class="player-bases">
-      <div
-        *ngFor="let player of players"
-        class="player-base"
+      <div *ngFor="let player of players" 
+        class="player-base" 
         [attr.player-id]="player"
-        [class.highlight]="getActivePlayer(data.turn!) === player"
-      ></div>
+        [class.highlight]="getActivePlayer(data.turn!) === player">
+      </div>
     </div>
   </div>
 
+  <!-- Game Controls -->
   <div class="footer">
     <div class="row">
-      <button
-        id="dice-btn"
-        class="btn btn-dice"
-        [disabled]="data.state !== GameState.DICE_NOT_ROLLED"
-        (click)="rollDice()"
-      >
-        Roll
+      <button id="dice-btn" 
+        class="btn btn-dice" 
+        [disabled]="data.state !== GameState.DICE_NOT_ROLLED || !isMyTurn()"
+        (click)="rollDice()">
+        Roll Dice
       </button>
-      <div class="dice-value">{{ data.dice || '' }}</div>
-      <!-- <button id="reset-btn" class="btn btn-reset" (click)="resetGame()">Reset</button> -->
+      <div class="dice-value">
+        <span *ngIf="data.dice && data.dice > 0">🎲 {{ data.dice }}</span>
+      </div>
     </div>
-    <h2 class="active-player">Active Player: <span>{{ getActivePlayer(data.turn!) }}</span></h2>
+    
+    <h2 class="active-player">
+      Active Player: <span>{{ getActivePlayer(data.turn!) }}</span>
+      <span *ngIf="isMyTurn()" style="color: #4CAF50;"> (Your Turn!)</span>
+    </h2>
+
+    <div *ngIf="data.hasWon" class="winner-banner">
+      🎉 {{ data.hasWon }} Won the Game! 🎉
+    </div>
   </div>
 </div>

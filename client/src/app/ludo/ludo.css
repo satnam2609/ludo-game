@@ -50,26 +50,6 @@
   border: 2px solid #333;
 }
 
-.start-game {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.btn-start {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 30px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.btn-start:hover {
-  background-color: #45a049;
-}
-
 .waiting {
   text-align: center;
   padding: 20px;
@@ -77,12 +57,22 @@
   border: 1px solid #ffc107;
   border-radius: 8px;
   margin-bottom: 20px;
+  animation: pulse 2s infinite;
 }
 
 .waiting p {
-  margin: 0;
+  margin: 5px 0;
   color: #856404;
   font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    background: #fff3cd;
+  }
+  50% {
+    background: #ffe69c;
+  }
 }
 
 .ludo-container .ludo {
@@ -113,6 +103,7 @@
   cursor: pointer;
   border: 2px dashed;
   animation: spin 1s infinite linear;
+  z-index: 10;
 }
 
 @keyframes spin {
@@ -209,6 +200,7 @@
 
 .btn-dice:hover:not(:disabled) {
   background-color: #00804d;
+  transform: scale(1.05);
 }
 
 .btn-reset {
@@ -224,6 +216,7 @@
   background-color: #2196F3;
   color: white;
   padding: 8px 16px;
+  font-size: 14px;
 }
 
 .btn-back:hover {
@@ -238,9 +231,9 @@
 }
 
 .dice-value {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
-  min-width: 40px;
+  min-width: 60px;
   text-align: center;
 }
 
@@ -253,4 +246,29 @@
 .active-player span {
   color: #2196F3;
   font-weight: bold;
+}
+
+.winner-banner {
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+  animation: celebration 1s infinite;
+}
+
+@keyframes celebration {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.footer {
+  margin-top: 15px;
 }

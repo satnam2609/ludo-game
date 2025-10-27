@@ -7,10 +7,20 @@ import { Observable } from 'rxjs';
 })
 export class SocketService {
   private socket: Socket;
+  private _currentRoomId: string | null = null;
 
   constructor() {
     this.socket = io('http://localhost:3000', {
       transports: ['websocket'],
+      autoConnect: true,
+    });
+
+    this.socket.on('connect', () => {
+      console.log('Connected to server:', this.socket.id);
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from server');
     });
   }
 
@@ -18,28 +28,35 @@ export class SocketService {
     return this.socket.id;
   }
 
+  get currentRoomId() {
+    return this._currentRoomId;
+  }
+
+  set currentRoomId(roomId: string | null) {
+    this._currentRoomId = roomId;
+  }
+
   emit(event: string, data: any): void {
+    console.log('Emitting event:', event, data);
     this.socket.emit(event, data);
   }
 
   on<T>(event: string): Observable<T> {
     return new Observable((observer) => {
       this.socket.on(event, (data: T) => {
+        console.log('Received event:', event, data);
         observer.next(data);
       });
+
+      // Cleanup on unsubscribe
+      return () => {
+        this.socket.off(event);
+      };
     });
   }
 
-  emitWithAck(event: string, data: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.socket.emit(event, data, (response: any) => {
-        if (response.success) {
-          resolve(response);
-        } else {
-          reject(response.error);
-        }
-      });
-    });
+  off(event: string): void {
+    this.socket.off(event);
   }
 
   disconnect(): void {

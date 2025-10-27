@@ -8,7 +8,7 @@ import { SocketService } from './ludo/socket.service';
 import { LobbyComponent } from './lobby/lobby';
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, FontAwesomeModule, LobbyComponent],
+  imports: [FormsModule, FontAwesomeModule, RouterOutlet],
   providers: [SocketService, LudoService],
   templateUrl: './app.html',
   styleUrl: './app.css',
