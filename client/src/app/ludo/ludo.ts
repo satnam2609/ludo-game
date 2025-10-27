@@ -41,7 +41,7 @@ export class LudoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Ludo component initialized');
-    // Subscribe to eligible pieces to keep current value
+
     this.subscription.add(
       this.eligiblePieces$.subscribe((pieces) => {
         this.eligiblePiecesValue = pieces;
@@ -57,16 +57,11 @@ export class LudoComponent implements OnInit, OnDestroy {
     this.ludoService.rollDice();
   }
 
-  resetGame(): void {
-    this.ludoService.resetGame();
-  }
-
   onPieceClick(player: Player, piece: number): void {
-    // Check if piece is eligible
     if (!this.eligiblePiecesValue.includes(piece)) {
       return;
     }
-    this.ludoService.handlePieceClick(player, piece);
+    this.ludoService.handlePieceClick(piece);
   }
 
   getPiecePosition(position: number | undefined): { top: string; left: string } {
