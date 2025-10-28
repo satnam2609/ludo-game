@@ -1,5 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  FaIconComponent,
+  FaIconLibrary,
+  FontAwesomeModule,
+} from '@fortawesome/angular-fontawesome';
 import {
   faDiceOne,
   faDiceTwo,
@@ -12,33 +16,38 @@ import {
 
 @Component({
   selector: 'app-dice',
-  imports: [FaIconComponent],
+  imports: [FontAwesomeModule],
   templateUrl: './dice.html',
   styleUrl: './dice.css',
 })
-export class DiceComponent {
-  currentDiceValue: number = 1;
-  tempDiceValue:number = this.currentDiceValue;
-  isRolling: boolean = false;
-  currentDiceFaceIcon: IconDefinition = faDiceOne;
+export class DiceComponent implements OnChanges {
+  @Input({ required: true }) diceValue!: number | null;
 
-  private diceIcons: { [key: number]: IconDefinition } = {
-    1: faDiceOne,
-    2: faDiceTwo,
-    3: faDiceThree,
-    4: faDiceFour,
-    5: faDiceFive,
-    6: faDiceSix,
-  };
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('Dice component changed');
+    this.rollDice();
+  }
 
-  rollDice(): void {
-    this.isRolling = true;
-    setTimeout(() => {
-      this.tempDiceValue = Math.floor(Math.random() * 6) + 1;
-      this.currentDiceFaceIcon = this.diceIcons[this.tempDiceValue];
-      this.isRolling = false;
-    }, 1000);
-    this.currentDiceFaceIcon = this.diceIcons[this.currentDiceValue];
-    this.isRolling = false;
+  rollDice() {
+    const dice = [...document.querySelectorAll('.die-list')];
+    dice.forEach((die: Element) => {
+      this.toggleClasses(die);
+      die.setAttribute('data-roll', this.getRandomNumber(1, 6).toString());
+    });
+    dice[dice.length - 1].setAttribute(
+      'data-roll',
+      this.diceValue ? this.diceValue.toString() : '1'
+    );
+  }
+
+  toggleClasses(die: any) {
+    die.classList.toggle('odd-roll');
+    die.classList.toggle('even-roll');
+  }
+
+  getRandomNumber(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

@@ -12,11 +12,12 @@ import {
   STEP_LENGTH,
 } from './constants'
 import { AsyncPipe, NgFor, NgIf, NgStyle } from '@angular/common';
+import { DiceComponent } from "./dice/dice";
 
 @Component({
   selector: 'app-ludo',
   standalone: true,
-  imports: [NgStyle, AsyncPipe, NgFor, NgIf],
+  imports: [NgStyle, AsyncPipe, NgFor, NgIf, DiceComponent],
   templateUrl: './ludo.html',
   styleUrls: ['./ludo.css'],
 })
@@ -70,8 +71,6 @@ export class LudoComponent implements OnInit, OnDestroy {
     }
 
     console.log('Room ID:', this.roomId);
-
-    // Subscribe to eligible pieces
     this.subscription.add(
       this.eligiblePieces$.subscribe((pieces) => {
         this.eligiblePiecesValue = pieces;
@@ -79,15 +78,12 @@ export class LudoComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Subscribe to current player
     this.subscription.add(
       this.currentPlayer$.subscribe((player) => {
         this.currentPlayerValue = player;
         console.log('Current player updated:', player);
       })
     );
-
-    // Subscribe to turn
     this.subscription.add(
       this.turn$.subscribe((turn) => {
         this.turnValue = turn;
@@ -95,7 +91,6 @@ export class LudoComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Subscribe to state
     this.subscription.add(
       this.state$.subscribe((state) => {
         this.stateValue = state;
@@ -103,7 +98,6 @@ export class LudoComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Subscribe to winner
     this.subscription.add(
       this.hasWon$.subscribe((winner) => {
         if (winner) {
@@ -121,7 +115,6 @@ export class LudoComponent implements OnInit, OnDestroy {
   }
 
   rollDice(): void {
-    // Check if it's the current player's turn
     const activePlayer = PLAYERS[this.turnValue];
     if (this.currentPlayerValue !== activePlayer) {
       console.log('Not your turn!');
@@ -141,20 +134,18 @@ export class LudoComponent implements OnInit, OnDestroy {
   onPieceClick(player: Player, piece: number): void {
     console.log('Piece clicked:', player, piece);
     
-    // Check if it's the current player
     if (this.currentPlayerValue !== player) {
       console.log('Not your piece!');
       return;
     }
 
-    // Check if it's the current player's turn
+
     const activePlayer = PLAYERS[this.turnValue];
     if (this.currentPlayerValue !== activePlayer) {
       console.log('Not your turn!');
       return;
     }
 
-    // Check if piece is eligible
     if (!this.eligiblePiecesValue.includes(piece)) {
       console.log('Piece not eligible:', piece, 'Eligible:', this.eligiblePiecesValue);
       return;
@@ -190,7 +181,7 @@ export class LudoComponent implements OnInit, OnDestroy {
 
   getPlayerPosition(positions: PlayerPositions | null, player: Player, piece: number): number {
     if (!positions) {
-      console.warn('No positions available');
+      console.log('No positions available');
       return 0;
     }
     return positions[player][piece];
@@ -201,7 +192,7 @@ export class LudoComponent implements OnInit, OnDestroy {
     if (confirm) {
       this.ludoService.resetState();
       this.socketService.currentRoomId = null;
-      this.router.navigate(['/lobby']);
+      this.router.navigate(['/']);
     }
   }
 

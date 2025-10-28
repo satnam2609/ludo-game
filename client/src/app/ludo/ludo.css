@@ -102,6 +102,7 @@
 .player-piece.highlight {
   cursor: pointer;
   border: 2px dashed;
+  border-color: #f9f9f9;
   animation: spin 1s infinite linear;
   z-index: 10;
 }
@@ -119,23 +120,23 @@
 }
 
 [player-id='P1'].player-piece {
-  background-color: #2eafff;
-  border-color: #1295e7;
+  background-color: #0a97fb;
+  border-color: #121415;
 }
 
 [player-id='P2'].player-piece {
   background-color: #00b550;
-  border-color: #049645;
+  border-color: #29352f;
 }
 
 [player-id='P3'].player-piece {
   background-color: #ffeb3b;
-  border-color: #fbc02d;
+  border-color: #3c372c;
 }
 
 [player-id='P4'].player-piece {
   background-color: #f44336;
-  border-color: #c62828;
+  border-color: #332626;
 }
 
 .player-base {
@@ -170,12 +171,12 @@
 }
 
 .player-base.highlight {
-  animation: border-blink 0.7s infinite ease-in-out;
+  animation: border-blink 1s infinite ease-in-out;
 }
 
 @keyframes border-blink {
   50% {
-    border-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(233, 230, 230, 0.466);
   }
 }
 

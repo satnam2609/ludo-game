@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  BASE_POSITIONS,
-  PlayerPositions,
-  GameState,
-  Player,
-} from './constants';
+import { BASE_POSITIONS, PlayerPositions, GameState, Player } from './constants';
 import { SocketService } from './socket.service';
 
 interface RoomUpdate {
@@ -61,19 +56,21 @@ export class LudoService {
   }
 
   private setupSocketListeners(): void {
-    // Listen for game updates
     this.socketService.on<RoomUpdate>('update').subscribe((response) => {
       console.log('Received update:', response);
       this.updateGameState(response.data);
     });
 
-    // Listen for room created event
     this.socketService.on<RoomUpdate>('room-created').subscribe((response) => {
       console.log('Room created:', response);
       this.updateGameState(response.data);
     });
 
-    // Listen for errors
+    this.socketService.on<RoomUpdate>('room-joined').subscribe((response) => {
+      console.log('Room joined:', response);
+      this.updateGameState(response.data);
+    });
+
     this.socketService.on<{ message: string }>('error').subscribe((error) => {
       console.error('Socket error:', error);
       alert(error.message);
@@ -89,7 +86,6 @@ export class LudoService {
     this.playersSubject.next(room.players);
     this.hasWonSubject.next(room.hasWon);
 
-    // Set current player based on socket ID
     const socketId = this.socketService.id;
     if (socketId && room.socketClients[socketId]) {
       this.currentPlayerSubject.next(room.socketClients[socketId]);

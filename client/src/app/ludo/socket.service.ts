@@ -24,7 +24,7 @@ export class SocketService {
     });
   }
 
-  get id() {
+  get id() {   
     return this.socket.id;
   }
 
@@ -48,7 +48,6 @@ export class SocketService {
         observer.next(data);
       });
 
-      // Cleanup on unsubscribe
       return () => {
         this.socket.off(event);
       };
